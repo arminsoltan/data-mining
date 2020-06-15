@@ -44,9 +44,9 @@ def split_data(all_data):
     return x_train, y_train, x_test, y_test
 
 
-def reduce_dimensionality(x_train):
+def reduce_dimensionality(x_data):
     pca = decomposition.PCA(n_components=512)
-    return pca.fit_transform(x_train)
+    return pca.fit_transform(x_data)
 
 
 def classifying(x_train, y_train, x_test, y_test):
