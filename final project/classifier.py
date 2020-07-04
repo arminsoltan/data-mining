@@ -4,7 +4,8 @@ from sklearn.svm import SVC
 from sklearn.neighbors import RadiusNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import AdaBoostClassifier, GradientBoostingClassifier, VotingClassifier
-
+from sklearn import svm as svm_clf
+from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
 
 
@@ -29,12 +30,22 @@ def ada_boost(x_train, y_train, x_test, y_test):
 
 
 def mlp(x_train, y_train, x_test, y_test):
-    clf = MLPClassifier(random_state=1, max_iter=300)
+    clf = MLPClassifier(random_state=1, max_iter=300, hidden_layer_sizes=(40, 10))
     return compute_validation(x_train, y_train, x_test, y_test, clf)
 
 
 def radius_neighbor(x_train, y_train, x_test, y_test):
-    clf = RadiusNeighborsClassifier(radius=30)
+    clf = RadiusNeighborsClassifier(radius=200)
+    return compute_validation(x_train, y_train, x_test, y_test, clf)
+
+
+def svm(x_train, y_train, x_test, y_test):
+    clf = svm_clf.SVC(gamma='scale')
+    return compute_validation(x_train, y_train, x_test, y_test, clf)
+
+
+def logistic_regression(x_train, y_train, x_test, y_test):
+    clf = LogisticRegression(random_state=0)
     return compute_validation(x_train, y_train, x_test, y_test, clf)
 
 
@@ -47,8 +58,8 @@ def compute_validation(x_train, y_train, x_test, y_test, clf):
     recall_score = metrics.recall_score(y_test, y_prediction)
     f_measure = metrics.f1_score(y_test, y_prediction)
     scores = {
-        'accuracy': confusion_matrix,
-        'confusion': accuracy_score,
+        'accuracy': accuracy_score,
+        'confusion': confusion_matrix,
         'precision': precision_score,
         'recall': recall_score,
         'f_measure': f_measure

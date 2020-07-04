@@ -1,8 +1,12 @@
 import numpy as np
 from sklearn import preprocessing, decomposition
-from classifier import gradient_boosting, radius_neighbor, random_forest, ada_boost, knn, mlp
+from classifier import gradient_boosting, radius_neighbor, random_forest, ada_boost, knn, mlp, logistic_regression, svm
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import metrics
+from sklearn.model_selection import KFold
+from cluster import k_mean_clustering
+import pandas as pd
+
 
 LENGTH_DATA = 1024
 DATA_SIZE = 8992
@@ -52,11 +56,13 @@ def reduce_dimensionality(x_data):
 def classifying(x_train, y_train, x_test, y_test):
     all_classifier_func = [
         # gradient_boosting,
-        # radius_neighbor,
+        radius_neighbor
         # random_forest,
         # ada_boost,
         # knn,
-        mlp
+        # mlp,
+        # svm,
+        # logistic_regression
     ]
     for classifier in all_classifier_func:
         scores = classifier(x_train, y_train, x_test, y_test)
@@ -64,6 +70,48 @@ def classifying(x_train, y_train, x_test, y_test):
         for key in scores.keys():
             print("###########################{}########################".format(key))
             print(scores[key])
+
+
+def clustering(x_train, y_train, x_test, y_test):
+    all_clustering_func = [
+        k_mean_clustering
+    ]
+    for cluster in all_clustering_func:
+        scores = cluster(x_train, y_train, x_test, y_test)
+        print("*************************{}********************".format(cluster.__name__))
+        for key in scores.keys():
+            print("###########################{}########################".format(key))
+            print(scores[key])
+
+
+def k_fold(x_data, y_data):
+    classifiers = [
+        gradient_boosting,
+        radius_neighbor,
+        random_forest,
+        ada_boost,
+        knn,
+        mlp,
+        svm,
+        logistic_regression
+    ]
+    accuracy_score = dict()
+    for clf in classifiers:
+        accuracy_score[clf.__name__] = 0
+    kf = KFold(n_splits=10)
+    for train_index, test_index in kf.split(x_data):
+        x_train, y_train, x_test, y_test = list(), list(), list(), list()
+        for i in train_index:
+            x_train.append(x_data[i])
+            y_train.append(y_data[i])
+        for j in test_index:
+            x_test.append(x_data[j])
+            y_test.append(y_data[j])
+        for clf in classifiers:
+            accuracy_score[clf.__name__] += clf(x_train, y_train, x_test, y_test)['accuracy']
+    for clf in classifiers:
+        print("..............accuracy  {} classifier .............".format(clf.__name__))
+        print(accuracy_score[clf.__name__] / 10)
 
 
 def main():
@@ -74,8 +122,10 @@ def main():
     x_data = reduce_dimensionality(x_data)
     x_train = x_data[:TEST_SIZE]
     x_test = x_data[TEST_SIZE:]
-    # print(x_train[0], y_train)
     classifying(x_train, y_train, x_test, y_test)
+    # clustering(x_train, y_train, x_test, y_test)
+    # y_data = np.concatenate([y_train, y_test])
+    # k_fold(x_data, y_data)
 
 
 if __name__ == "__main__":
