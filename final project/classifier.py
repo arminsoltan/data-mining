@@ -6,6 +6,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import AdaBoostClassifier, GradientBoostingClassifier, VotingClassifier
 from sklearn import svm as svm_clf
 from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB
 from sklearn import metrics
 
 
@@ -46,6 +47,11 @@ def svm(x_train, y_train, x_test, y_test):
 
 def logistic_regression(x_train, y_train, x_test, y_test):
     clf = LogisticRegression(random_state=0)
+    return compute_validation(x_train, y_train, x_test, y_test, clf)
+
+
+def naive_bayes(x_train, y_train, x_test, y_test):
+    clf = GaussianNB()
     return compute_validation(x_train, y_train, x_test, y_test, clf)
 
 

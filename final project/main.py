@@ -1,12 +1,12 @@
 import numpy as np
 from sklearn import preprocessing, decomposition
-from classifier import gradient_boosting, radius_neighbor, random_forest, ada_boost, knn, mlp, logistic_regression, svm
+from classifier import gradient_boosting, radius_neighbor, random_forest, ada_boost, knn, mlp, logistic_regression, svm, \
+    naive_bayes
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import metrics
 from sklearn.model_selection import KFold
 from cluster import k_mean_clustering
 import pandas as pd
-
 
 LENGTH_DATA = 1024
 DATA_SIZE = 8992
@@ -55,8 +55,9 @@ def reduce_dimensionality(x_data):
 
 def classifying(x_train, y_train, x_test, y_test):
     all_classifier_func = [
+        naive_bayes
         # gradient_boosting,
-        radius_neighbor
+        # radius_neighbor
         # random_forest,
         # ada_boost,
         # knn,
